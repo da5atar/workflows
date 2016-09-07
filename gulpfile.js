@@ -3,7 +3,8 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'), //use a variable called gutil, and then require the gulp-util plug-in
     coffee = require('gulp-coffee'), //doing the same for gulp-coffee
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    browserify = require('gulp-browserify');
 
 // Using these gulp var to issue different commands:
 
@@ -35,5 +36,6 @@ gulp.task('coffee', function() {
 gulp.task('js', function() {
     gulp.src(jsSources)
      .pipe(concat('script.js'))
+     .pipe(browserify())
      .pipe(gulp.dest('builds/development/js'))
 });
