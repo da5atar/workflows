@@ -4,7 +4,8 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'), //use a variable called gutil, and then require the gulp-util plug-in
     coffee = require('gulp-coffee'), //doing the same for gulp-coffee
     concat = require('gulp-concat'),
-    browserify = require('gulp-browserify');
+    browserify = require('gulp-browserify'),
+    compass = require('gulp-compass');
 
 // Using these gulp var to issue different commands:
 
@@ -26,6 +27,9 @@ var jsSources = [
     'components/scripts/template.js'
 ];
 
+// Variable for our Sass sources
+var sassSources=['components/sass/style.scss'];
+
 gulp.task('coffee', function() {
     gulp.src(coffeeSources)
      .pipe(coffee({bare: true})
@@ -38,4 +42,15 @@ gulp.task('js', function() {
      .pipe(concat('script.js'))
      .pipe(browserify())
      .pipe(gulp.dest('builds/development/js'))
+});
+
+gulp.task('compass', function() {
+    gulp.src(sassSources)
+     .pipe(compass({
+        sass: 'components/sass',
+        image: 'builds/development/images',
+        style: 'expanded'
+     }))
+     .on('error', gutil.log)
+     .pipe(gulp.dest('builds/development/css'))
 });
