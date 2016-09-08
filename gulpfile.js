@@ -29,7 +29,11 @@ var jsSources = [
 ];
 
 // Variable for our Sass sources
-var sassSources=['components/sass/style.scss'];
+var sassSources = ['components/sass/style.scss'];
+var htmlSources = ['builds/development/*.html'];
+var jsonSources = ['builds/development/js/*.json'];
+
+//Creating Tasks
 
 gulp.task('coffee', function() {
     gulp.src(coffeeSources)
@@ -62,6 +66,8 @@ gulp.task('watch', function() {
     gulp.watch(coffeeSources, ['coffee']);
     gulp.watch(jsSources, ['js']); // Here, using variable jsSources to track .js files
     gulp.watch('components/sass/*.scss', ['compass']); //That way, if we make any changes in style.scss and any of the partials (.scss files with the underscores). watch is going to notice them, and reprocess them through compass.
+    gulp.watch(htmlSources, ['html']);
+    gulp.watch(jsonSources, ['json']);
 
 });
 
@@ -72,4 +78,14 @@ gulp.task('connect', function(){
     });
 });
 
-gulp.task('default', ['coffee', 'js', 'compass', 'connect', 'watch']);
+gulp.task ('html', function(){
+    gulp.src(htmlSources)
+    .pipe(connect.reload())
+});
+
+gulp.task ('json', function(){
+    gulp.src(jsonSources)
+    .pipe(connect.reload())
+});
+
+gulp.task('default', ['html', 'json', 'coffee', 'js', 'compass', 'connect', 'watch']);
