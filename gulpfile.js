@@ -5,7 +5,8 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'), //doing the same for gulp-coffee
     concat = require('gulp-concat'),
     browserify = require('gulp-browserify'),
-    compass = require('gulp-compass');
+    compass = require('gulp-compass'),
+    connect = require('gulp-connect');
 
 // Using these gulp var to issue different commands:
 
@@ -34,7 +35,7 @@ gulp.task('coffee', function() {
     gulp.src(coffeeSources)
      .pipe(coffee({bare: true})
         .on('error', gutil.log))
-     .pipe(gulp.dest('components/scripts'))
+     .pipe(gulp.dest('components/scripts')) // the coffee's task job is to just to process coffee script, and then send a copy of the script that it generate into the JavaScript sources.
 });
 
 gulp.task('js', function() {
@@ -42,6 +43,7 @@ gulp.task('js', function() {
      .pipe(concat('script.js'))
      .pipe(browserify())
      .pipe(gulp.dest('builds/development/js'))
+     .pipe(connect.reload()) // reloads browser whenever anything in JavaScript changes.
 });
 
 gulp.task('compass', function() {
@@ -53,12 +55,21 @@ gulp.task('compass', function() {
      }))
      .on('error', gutil.log)
      .pipe(gulp.dest('builds/development/css'))
+     .pipe(connect.reload()) // That way when we make changes to any of the Compass files it will automatically reload them.
 });
 
 gulp.task('watch', function() {
     gulp.watch(coffeeSources, ['coffee']);
-    gulp.watch(jsSources, ['js']);
+    gulp.watch(jsSources, ['js']); // Here, using variable jsSources to track .js files
     gulp.watch('components/sass/*.scss', ['compass']); //That way, if we make any changes in style.scss and any of the partials (.scss files with the underscores). watch is going to notice them, and reprocess them through compass.
+
 });
 
-gulp.task('default', ['coffee', 'js', 'compass']);
+gulp.task('connect', function(){
+    connect.server({
+        root:'builds/development/', //the root of our website. the parameter root takes essentially the location of our application.
+        livereload: true // To auto reload the browser after changes
+    });
+});
+
+gulp.task('default', ['coffee', 'js', 'compass', 'connect', 'watch']);
