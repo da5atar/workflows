@@ -55,4 +55,10 @@ gulp.task('compass', function() {
      .pipe(gulp.dest('builds/development/css'))
 });
 
+gulp.task('watch', function() {
+    gulp.watch(coffeeSources, ['coffee']);
+    gulp.watch(jsSources, ['js']);
+    gulp.watch('components/sass/*.scss', ['compass']); //That way, if we make any changes in style.scss and any of the partials (.scss files with the underscores). watch is going to notice them, and reprocess them through compass.
+});
+
 gulp.task('default', ['coffee', 'js', 'compass']);
