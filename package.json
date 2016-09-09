@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/da5atar/workflows.git"
   },
-  "author": "Ray Villalobos",
+  "author": "Massamba SOW",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",

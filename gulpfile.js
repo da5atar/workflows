@@ -8,6 +8,37 @@ var gulp = require('gulp'),
     compass = require('gulp-compass'),
     connect = require('gulp-connect');
 
+// var area i.e separating declaration from assignment
+var env,
+    coffeeSources,
+    jsSources,
+    sassSources,
+    htmlSources,
+    jsonSources,
+    outputDir,
+    sassStyle;
+
+ env = process.env.NODE_ENV || 'development';
+
+/*use process.env from node.js to check if we've setup
+a NODE_ENV environment variable and assign it to env var
+if not we use the default value of development
+That way, if we'd set this up in our operating system,
+then this new variable, called env, would get the value
+of whatever we set, otherwise, it'll just assume that
+we're in the development environment.
+*/
+
+//modify how the output directory variable is used, depending (conditionally) on what we set up as the environment variable.
+
+ if (env ==='development') {
+    outputDir = 'builds/development/';
+    sassStyle = 'expanded';
+} else {
+    outputDir = 'builds/production/';
+    sassStyle ='compressed';
+}
+
 // Using these gulp var to issue different commands:
 
 // Here, using the task method to create a task called log (name of what you're trying to do)
@@ -17,11 +48,12 @@ gulp.task('log', function() {
     gutil.log('Workflows are awesome');
 });
 */
+
 //Array with paths to coffee script files
-var coffeeSources = ['components/coffee/tagline.coffee']
+ coffeeSources = ['components/coffee/tagline.coffee'];
 
 // Array with the path of all different js docs
-var jsSources = [
+ jsSources = [
     'components/scripts/rclick.js',
     'components/scripts/pixgrid.js',
     'components/scripts/tagline.js',
@@ -29,9 +61,9 @@ var jsSources = [
 ];
 
 // Variable for our Sass sources
-var sassSources = ['components/sass/style.scss'];
-var htmlSources = ['builds/development/*.html'];
-var jsonSources = ['builds/development/js/*.json'];
+ sassSources = ['components/sass/style.scss'];
+ htmlSources = [outputDir + '*.html'];
+ jsonSources = [outputDir + 'js/*.json'];
 
 //Creating Tasks
 
@@ -46,7 +78,7 @@ gulp.task('js', function() {
     gulp.src(jsSources)
      .pipe(concat('script.js'))
      .pipe(browserify())
-     .pipe(gulp.dest('builds/development/js'))
+     .pipe(gulp.dest(outputDir + '/js'))
      .pipe(connect.reload()) // reloads browser whenever anything in JavaScript changes.
 });
 
@@ -54,11 +86,12 @@ gulp.task('compass', function() {
     gulp.src(sassSources)
      .pipe(compass({
         sass: 'components/sass',
-        image: 'builds/development/images',
-        style: 'expanded'
+        image: outputDir + '/images',
+        //config_file: 'config.rb',
+        style: sassStyle
      }))
      .on('error', gutil.log)
-     .pipe(gulp.dest('builds/development/css'))
+     .pipe(gulp.dest(outputDir + '/css'))
      .pipe(connect.reload()) // That way when we make changes to any of the Compass files it will automatically reload them.
 });
 
@@ -73,7 +106,7 @@ gulp.task('watch', function() {
 
 gulp.task('connect', function(){
     connect.server({
-        root:'builds/development/', //the root of our website. the parameter root takes essentially the location of our application.
+        root: outputDir, //the root of our website. the parameter root takes essentially the location of our application.
         livereload: true // To auto reload the browser after changes
     });
 });
