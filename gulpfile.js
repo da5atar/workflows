@@ -33,10 +33,10 @@ we're in the development environment.
 
  if (env ==='development') {
     outputDir = 'builds/development/';
-    sassStyle = 'expanded';
+    //sassStyle = 'expanded';
 } else {
     outputDir = 'builds/production/';
-    sassStyle ='compressed';
+    //sassStyle ='compressed';
 }
 
 // Using these gulp var to issue different commands:
@@ -87,8 +87,8 @@ gulp.task('compass', function() {
      .pipe(compass({
         sass: 'components/sass',
         image: outputDir + '/images',
-        //config_file: 'config.rb',
-        style: sassStyle
+        config_file: 'config.rb',
+        //style: sassStyle
      }))
      .on('error', gutil.log)
      .pipe(gulp.dest(outputDir + '/css'))
