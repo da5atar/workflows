@@ -9,7 +9,8 @@ var gulp = require('gulp'),
     connect = require('gulp-connect'),
     gulpif = require('gulp-if'),
     uglify = require('gulp-uglify'),
-    minifyHTML = require('gulp-minify-html');
+    minifyHTML = require('gulp-minify-html'),
+    jsonminify = require('gulp-jsonminify');
 
 // var area i.e separating declaration from assignment
 var env,
@@ -104,7 +105,7 @@ gulp.task('watch', function() {
     gulp.watch(jsSources, ['js']); // Here, using variable jsSources to track .js files
     gulp.watch('components/sass/*.scss', ['compass']); //That way, if we make any changes in style.scss and any of the partials (.scss files with the underscores). watch is going to notice them, and reprocess them through compass.
     gulp.watch('builds/development/*html', ['html']);
-    gulp.watch(jsonSources, ['json']);
+    gulp.watch('builds/development/js/*.json', ['json']);
 
 });
 
@@ -123,7 +124,9 @@ gulp.task ('html', function(){
 });
 
 gulp.task ('json', function(){
-    gulp.src(jsonSources)
+    gulp.src('builds/development/js/*.json')
+    .pipe(gulpif(env === 'production', jsonminify()))
+    .pipe(gulpif(env === 'production', gulp.dest('builds/production/js/')))
     .pipe(connect.reload())
 });
 
